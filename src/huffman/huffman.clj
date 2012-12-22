@@ -105,34 +105,6 @@
   [pairs]
   (successive-merge (make-leaf-set pairs)))
 
-(defn gen-frequency-pairs
-  [plaintext]
-  (let [gamut (set (seq plaintext))
-        frequencies (map 
-                      (fn[ch] 
-                        (count 
-                          (filter #(= (nth plaintext %) ch) 
-                                  (range (count plaintext))))) gamut)]
-    (partition 2 (interleave gamut frequencies))))
-
-(comment (defn gen-frequency-pairs
-  [text]
-  (apply merge-with +
-         (map #(hash-map % 1) (seq text)))))
-
-(comment 
-  (defn gen-frequency-pairs
-    [plaintext]
-    (loop [[ch & rest-chs] (seq plaintext)
-           pairs {}]
-      (if ch
-        (recur rest-chs
-               (assoc pairs ch (if (get pairs ch) 
-                                 (inc (get pairs ch))
-                                 1)))
-        pairs))))
-
-
 (defn decode
   [bits tree]
   (loop [my-bits bits
@@ -158,5 +130,5 @@
                  (java.io.FileReader. "/Users/nickbauman/no_sql_non-starter.txt"))]
   (let [seq (line-seq rdr)
         str-seq (apply str seq)]
-    (gen-frequency-pairs str-seq))))
+    (frequencies str-seq))))
 
