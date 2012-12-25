@@ -74,7 +74,7 @@
 (defn make-code-tree 
   "Joins two nodes by creating a parent node from a seq of their combined 
   symbols and the sum of their weights in the tree"
-	[left right]
+  [left right]
   (list left
         right
         (into (symbols right) (symbols left))
