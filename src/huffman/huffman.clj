@@ -1,4 +1,5 @@
 (ns huffman
+  (:import [java.io BufferedReader InputStreamReader])
   (:require [clojure.test :as test]))
 
 (declare symbols symbol-leaf weight)
@@ -164,8 +165,10 @@
 ;; Here we open Homer's Illiad and run it through its paces:
 
 (def sample-illiad 
-  (with-open [rdr (java.io.BufferedReader. 
-                    (java.io.FileReader. "/Users/nickbauman/Documents/workspaces/clojure1/huffman/src/huffman/illiad_of_homer.txt"))]
+  (with-open [rdr (BufferedReader. 
+                    (InputStreamReader.
+                      (.getResourceAsStream 
+                        (.getContextClassLoader (Thread/currentThread)) "huffman/illiad_of_homer.txt")))]
     (let [seq (line-seq rdr)]
       (apply str seq))))
 
