@@ -42,11 +42,10 @@
 
 (defn weight 
   "Returns the branch's weight"
-	[tree]
- ;(println "tree" tree)
- (if (leaf? tree)
-   (weight-leaf tree)
-   (nth tree 3)))
+  [tree]
+  (if (leaf? tree)
+    (weight-leaf tree)
+    (nth tree 3)))
 
 (defn choose-branch
   "Takes the current branch of a huffman tree and returns the next branch. For decoding."
@@ -72,13 +71,6 @@
                    (conj encoded-list 0)))))
       (throw (RuntimeException. (str "huffman tree cannot encode token '" token "'"))))))
 
-(defn encode
-  "Returns a seq of 1s and 0s taking a message seq and an adaquate huffman tree
-  for that sequence. Throws an exception if the huffman tree does not contain 
-  a particular element of the message sequence."
-  [message tree]
-    (mapcat (partial encode-symbol tree) message))
-
 (defn make-code-tree 
   "Joins two nodes by creating a parent node from a seq of their combined 
   symbols and the sum of their weights in the tree"
@@ -95,6 +87,13 @@
                     (if (seq (second pairs))
                       (generate-huffman-tree (rest pairs))
                       (apply make-leaf (first pairs)))))
+
+(defn encode
+  "Returns a seq of 1s and 0s taking a message seq and an adaquate huffman tree
+  for that sequence. Throws an exception if the huffman tree does not contain 
+  a particular element of the message sequence."
+  [message tree]
+    (mapcat (partial encode-symbol tree) message))
 
 (defn decode
   "Decode numeric bits represented as either a 1 (right branch) or a 0 (left 
@@ -113,7 +112,7 @@
 
 
 ;;;;;;
-;; End of Huffman implementation. The rest of this is code to exercise it.
+;; End of Huffman implementation. The rest of this is code to exercise and test it.
 ;;;;;;
 
 ;; Testing a basic huffman implementation
@@ -135,16 +134,16 @@
 (test/deftest test-simple-encode
               (test/is (= sample-message (encode sample-decoded-message sample-tree))))
 
+;; Used to sort frequencies...
 (def compare-pair-by-weight (comparator (fn[[a x] [b y]] (> x y))))
   
 ;; Random strings with their own huffman trees
   
 ;; A sample set of characters with dupes to influence commonly used characters in English
-
 (def keyboard "`1234567890-=qweeeertttyuuuiiiioooopp[]\\aaassssssddffghhjjkl;'zxccvbbnnmm,./        ")
 
 (defn sel-rand-char
-  "Select a random character from string"
+  "Select a random character from a string"
   [string]
   (nth string (int (rand (count keyboard)))))
 
