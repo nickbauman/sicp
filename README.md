@@ -1,6 +1,6 @@
 # SCIP in Clojure
 
-## Clojure exercises for the book _Structure and Interpretation of Computer Programs._
+### Clojure exercises for the book _Structure and Interpretation of Computer Programs._
 
 The goal here is to convert all the encountered source from Scheme to Clojure 
 as directly as possible while implementing the exercises in Clojure as well. 
@@ -20,4 +20,4 @@ parallelizable.*
 
 ### Notes
 
-### Completed Huffman Trees Exercises (Section 2.3.4)
+#### Completed Huffman Trees Exercises (Section 2.3.4)
