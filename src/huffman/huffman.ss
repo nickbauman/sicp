@@ -1,3 +1,6 @@
+;; This is some of the original code from the SICP book (written in Scheme)
+;; for section 2.3.4
+
 (define (make-leaf symbol weight)
   (list 'leaf symbol weight))
 
