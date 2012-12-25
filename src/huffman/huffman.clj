@@ -5,8 +5,8 @@
 
 (defn make-leaf
   "Creates a leaf node from a symbol and its leaf"
-	[symbowl weight]
-  (list :leaf symbowl weight))
+	[symbl weight]
+  (list :leaf symbl weight))
 
 (defn leaf? 
   "Returns whether a node is a leaf"
@@ -43,7 +43,7 @@
 (defn weight 
   "Returns the branch's weight"
 	[tree]
- (println "tree" tree)
+ ;(println "tree" tree)
  (if (leaf? tree)
    (weight-leaf tree)
    (nth tree 3)))
@@ -88,31 +88,13 @@
         (into (symbols right) (symbols left))
         (+ (weight left) (weight right))))
 
-(defn adjoin-set 
-	[x set]
- (cond (not (seq set)) (list x)
-       (< (weight x) (weight (first set))) (cons x set)
-       :else (cons (first set)
-                   (adjoin-set x (rest set)))))
-
-(defn make-leaf-set 
-  [pairs]
-  (loop [[pair & remaining] pairs
-         t ()]
-    (if pair
-      (recur remaining 
-             (concat t (adjoin-set (make-leaf (first pair) (second pair)) (make-leaf-set remaining))))
-      t)))
-
-(defn successive-merge
-  [x]
-  ;; TODO implement this (make-code-tree ...
-  )
-
 (defn generate-huffman-tree
   "Takes a set of frequency pairs and generates a huffman tree datastructure from it"
   [pairs]
-  (successive-merge (make-leaf-set pairs)))
+    (make-code-tree (apply make-leaf (first pairs))
+                    (if (seq (second pairs))
+                      (generate-huffman-tree (rest pairs))
+                      (apply make-leaf (first pairs)))))
 
 (defn decode
   "Decode numeric bits represented as either a 1 (right branch) or a 0 (left 
@@ -134,7 +116,7 @@
 ;; End of Huffman implementation. The rest of this is code to exercise it.
 ;;;;;;
 
-;; Some frobbing around with huffman
+;; Testing a basic huffman implementation
 
 (def sample-tree
   (make-code-tree (make-leaf \A 4)
@@ -153,9 +135,12 @@
 (test/deftest test-simple-encode
               (test/is (= sample-message (encode sample-decoded-message sample-tree))))
 
-;; A mechanism to generate random strings for testing huffman trees
-
+(def compare-pair-by-weight (comparator (fn[[a x] [b y]] (> x y))))
+  
+;; Random strings with their own huffman trees
+  
 ;; A sample set of characters with dupes to influence commonly used characters in English
+
 (def keyboard "`1234567890-=qweeeertttyuuuiiiioooopp[]\\aaassssssddffghhjjkl;'zxccvbbnnmm,./        ")
 
 (defn sel-rand-char
@@ -164,11 +149,31 @@
   (nth string (int (rand (count keyboard)))))
 
 (defn gen-rand-str
-  "Create a random string of a certain size that relies on 'keyboard' value for a sample gamut"
-  [size]
-  (apply str (map (fn[x] (sel-rand-char keyboard)) (range size))))
+  "Create a random string of a certain size that relies on gamut string for a range of values"
+  [size gamut]
+  (apply str (map (fn[x] (sel-rand-char gamut)) (range size))))
 
-(def sample-string (gen-rand-str 6000))
+(def sample-random-string (gen-rand-str 6000 keyboard))
 
-(def sample-frequencies (sort (comparator (fn[[a x] [b y]] (> x y))) (frequencies sample-string)))
+(def sample-random-frequencies (sort compare-pair-by-weight (frequencies sample-random-string)))
 
+(def sample-random-huffman (generate-huffman-tree sample-random-frequencies))
+
+(test/deftest test-random-encode-decode
+              (test/is (= sample-random-string (apply str (decode (encode sample-random-string sample-random-huffman) sample-random-huffman)))))
+
+;; Here we open Homer's Illiad and run it through its paces:
+
+(def sample-illiad 
+  (with-open [rdr (java.io.BufferedReader. 
+                    (java.io.FileReader. "/Users/nickbauman/Documents/workspaces/clojure1/huffman/src/huffman/illiad_of_homer.txt"))]
+    (let [seq (line-seq rdr)]
+      (apply str seq))))
+
+(def sample-illiad-frequencies 
+  (sort compare-pair-by-weight (frequencies sample-illiad)))
+
+(def sample-illiad-huffman (generate-huffman-tree sample-illiad-frequencies))
+
+(test/deftest test-illiad-encode-decode
+              (test/is (= sample-illiad (apply str (decode (encode sample-illiad sample-illiad-huffman) sample-illiad-huffman)))))
