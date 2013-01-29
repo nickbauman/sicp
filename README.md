@@ -15,9 +15,10 @@ depending on the size of the data, even the Scheme code from SICP will blow
 the stack, too.)
 
 What you end up with is, often, simpler than the original Scheme implementation
-and often gives Clojure an edge by using functions that are inherently *easily
-parallelizable.*
+and often gives Clojure an edge by using functions that are inherently 
+parallelizable.
 
 ### Notes
 
+#### Started Conditional Expressions and Predicates Exercises (Section 1.1.6)
 #### Completed Huffman Trees Exercises (Section 2.3.4)

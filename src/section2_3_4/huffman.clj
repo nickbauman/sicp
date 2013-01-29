@@ -1,4 +1,4 @@
-(ns huffman
+(ns section2-3-4
   (:import [java.io BufferedReader InputStreamReader])
   (:require [clojure.test :as test]))
 
@@ -168,7 +168,7 @@
   (with-open [rdr (BufferedReader. 
                     (InputStreamReader.
                       (.getResourceAsStream 
-                        (.getContextClassLoader (Thread/currentThread)) "huffman/illiad_of_homer.txt")))]
+                        (.getContextClassLoader (Thread/currentThread)) "section2_3_4/illiad_of_homer.txt")))]
     (let [seq (line-seq rdr)]
       (apply str seq))))
 
