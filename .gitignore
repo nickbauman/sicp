@@ -41,7 +41,7 @@ out
 # Custom, project-specific files #
 ##################################
 bin
-.settings
+\.settings
 
 # Other SCM files #
 ##################################
